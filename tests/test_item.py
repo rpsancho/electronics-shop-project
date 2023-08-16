@@ -28,3 +28,27 @@ def test_item_created_items_list():
     count = len(Item.all)
     name2 = Item('name2', 1, 1)
     assert len(Item.all) == count + 1
+
+
+def test_item_name_getter(item_name1):
+    assert item_name1.name == 'name1'
+
+
+def test_item_name_setter(item_name1):
+    item_name1.name = '0123456789'
+    assert item_name1.name == '0123456789'
+    item_name1.name = '0123456789name1'
+    assert item_name1.name == '0123456789'
+
+
+def test_instantiate_from_csv():
+    Item.all = []
+    assert len(Item.all) == 0
+    Item.instantiate_from_csv()
+    assert len(Item.all) == 5
+
+
+def test_string_to_number():
+    assert Item.string_to_number('5') == 5
+    assert Item.string_to_number('5.0') == 5
+    assert Item.string_to_number('5.5') == 5
