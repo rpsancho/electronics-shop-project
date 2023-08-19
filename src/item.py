@@ -31,7 +31,6 @@ class Item:
 
     @classmethod
     def instantiate_from_csv(cls):
-        Item.all = []
         with open('../src/items.csv', "r", encoding='windows-1251', newline='') as f:
             init_data = csv.DictReader(f)
             for row in init_data:
