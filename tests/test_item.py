@@ -60,3 +60,9 @@ def test_item__repr__(item_name1):
 
 def test_item__str__(item_name1):
     assert str(item_name1) == 'name1'
+
+
+def test_item__add__(item_name1):
+    assert item_name1 + item_name1 == 10
+    with pytest.raises(TypeError):
+        5 + item_name1
