@@ -5,6 +5,7 @@ class Item:
     """
     Класс для представления товара в магазине.
     """
+    CSV_PATH = '../src/items.csv'
     pay_rate = 1.0
     all = []
 
@@ -42,10 +43,19 @@ class Item:
 
     @classmethod
     def instantiate_from_csv(cls):
-        with open('../src/items.csv', "r", encoding='windows-1251', newline='') as f:
-            init_data = csv.DictReader(f)
-            for row in init_data:
+        try:
+            f = open(cls.CSV_PATH, "r", encoding='windows-1251', newline='')
+        except FileNotFoundError:
+            # print('Отсутствует файл items.csv')
+            raise FileNotFoundError("Отсутствует файл items.csv")
+
+        init_data = csv.DictReader(f)
+        for row in init_data:
+            if not (row['name'] and row['price'] and row['quantity']):
+                raise InstantiateCSVError
+            else:
                 cls(row['name'], float(row['price']), int(row['quantity']))
+        f.close()
 
     @staticmethod
     def string_to_number(string):
@@ -64,3 +74,12 @@ class Item:
         Применяет установленную скидку для конкретного товара.
         """
         self.price *= self.pay_rate
+
+
+class InstantiateCSVError(Exception):
+
+    def __init__(self):
+        self.message = "Файл items.csv поврежден"
+
+    def __str__(self):
+        return self.message
