@@ -1,11 +1,16 @@
 """Здесь надо написать тесты с использованием pytest для модуля item."""
 import pytest
-from src.item import Item
+from src.item import Item, InstantiateCSVError
 
 
 @pytest.fixture
 def item_name1():
     return Item('name1', 12.34, 5)
+
+
+@pytest.fixture
+def item_class():
+    return Item
 
 
 def test_item_init(item_name1):
@@ -41,11 +46,19 @@ def test_item_name_setter(item_name1):
     assert item_name1.name == '0123456789'
 
 
-def test_instantiate_from_csv():
-    Item.all = []
-    assert len(Item.all) == 0
-    Item.instantiate_from_csv()
-    assert len(Item.all) == 5
+def test_instantiate_from_csv(item_class):
+    item_class.all = []
+    assert len(item_class.all) == 0
+    item_class.instantiate_from_csv()
+    assert len(item_class.all) == 5
+
+    item_class.CSV_PATH = '../tests/test_items111.csv'
+    with pytest.raises(FileNotFoundError):
+        item_class.instantiate_from_csv()
+
+    item_class.CSV_PATH = '../tests/test_items.csv'
+    with pytest.raises(InstantiateCSVError):
+        item_class.instantiate_from_csv()
 
 
 def test_string_to_number():
